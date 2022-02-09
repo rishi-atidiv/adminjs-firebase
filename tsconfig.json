@@ -1,13 +1,30 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "ES2018",
+    "target": "es6",
+    "lib": [
+      "es2018",
+      "DOM"
+    ],
+    "skipLibCheck": true,
     "sourceMap": true,
-    "outDir": "lib",
+    "noImplicitAny": false,
+    "strictNullChecks": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "declaration": true
+    "declaration": true,
+    "declarationDir": "./lib",
+    "outDir": "./lib",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "baseUrl": ".",
+    "paths": {
+      "react": ["node_modules/@types/react"],
+      "styled-components": ["node_modules/@types/styled-components"]
+    }
   },
+  "include": [
+    "./src/**/*.ts"
+  ],
   "exclude": [
     "node_modules",
     "lib",

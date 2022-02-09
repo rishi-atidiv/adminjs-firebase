@@ -1,7 +1,7 @@
-import AdminJS from 'adminjs';
+import { Router } from 'adminjs';
 import { match } from 'path-to-regexp';
 
-const { routes, assets } = AdminJS.Router;
+const { routes, assets } = Router;
 
 export const AppRoutes = routes.map(r => ({
   match: match(r.path.replace(/{/g, ':').replace(/}/g, ''), {

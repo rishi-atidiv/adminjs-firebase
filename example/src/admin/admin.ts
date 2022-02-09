@@ -1,9 +1,10 @@
 import AdminJSExpress from '@adminjs/express';
-import { FirestoreAdapter } from '@adminjs/firebase';
+import { FirestoreAdapter } from '../../../src';
 import AdminJS from 'adminjs';
 import { Express } from 'express';
-import { createUserResource } from './resources/user/user.resource';
 import firebase from 'firebase';
+
+import { createUserResource } from './resources/user/user.resource';
 
 const setupAdmin = async (app: Express): Promise<void> => {
   AdminJS.registerAdapter(FirestoreAdapter as any);

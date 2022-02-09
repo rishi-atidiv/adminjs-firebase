@@ -1,6 +1,7 @@
 import express from 'express';
-import setupAdmin from './admin/admin';
 import firebase from 'firebase';
+
+import setupAdmin from './admin/admin';
 import { firebaseConfig } from './firebase.config';
 
 const app = express();

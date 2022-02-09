@@ -1,8 +1,13 @@
-import { BaseProperty, BaseRecord, BaseResource, Filter } from 'adminjs';
+import {
+  BaseProperty,
+  BaseRecord,
+  BaseResource,
+  Filter,
+  ParamsType,
+} from 'adminjs';
 import firebase from 'firebase';
 import { BaseRecordFactory } from './utils/base-record.factory';
 import { getEmptyInstance, Schema, toProperties } from './utils/schema';
-import { ParamsType } from 'adminjs/types/src/backend/adapters/base-record';
 import firestoreRepository, {
   FirestoreRepository,
 } from './firestore.repository';
