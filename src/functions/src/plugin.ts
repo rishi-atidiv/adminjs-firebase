@@ -177,7 +177,7 @@ export const buildHandler = (
 
     const route = AppRoutes.find(r => r.match(path) && r.method === method);
     if (route) {
-      const params = ((route.match(path) as unknown) as any).params as Record<
+      const params = (route.match(path) as unknown as any).params as Record<
         string,
         string
       >;
