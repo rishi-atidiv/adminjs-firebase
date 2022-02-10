@@ -1,6 +1,6 @@
 {
   "name": "@adminjs/firebase",
-  "version": "1.0.10",
+  "version": "1.0.0",
   "description": "Firebase adapter for AdminJS",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
