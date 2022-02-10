@@ -12,7 +12,8 @@
     "dev": "tsc --watch",
     "lint": "eslint . --ext .ts",
     "style": "prettier --write '**/*.ts'",
-    "build": "tsc"
+    "build": "tsc",
+    "release": "semantic-release"
   },
   "devDependencies": {
     "@types/busboy": "^0.2.3",
