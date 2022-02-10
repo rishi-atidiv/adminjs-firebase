@@ -1,13 +1,14 @@
-import AdminBroExpress from 'admin-bro-expressjs';
-import { FirestoreAdapter } from 'admin-bro-firebase';
-import AdminBro from 'admin-bro';
+import AdminJSExpress from '@adminjs/express';
+import { FirestoreAdapter } from '../../../src';
+import AdminJS from 'adminjs';
 import { Express } from 'express';
-import { createUserResource } from './resources/user/user.resource';
 import firebase from 'firebase';
 
+import { createUserResource } from './resources/user/user.resource';
+
 const setupAdmin = async (app: Express): Promise<void> => {
-  AdminBro.registerAdapter(FirestoreAdapter as any);
-  const adminBro = new AdminBro({
+  AdminJS.registerAdapter(FirestoreAdapter as any);
+  const adminJs = new AdminJS({
     branding: {
       companyName: 'Firebase example',
     },
@@ -24,8 +25,8 @@ const setupAdmin = async (app: Express): Promise<void> => {
     ],
   });
 
-  const router = await AdminBroExpress.buildRouter(adminBro);
-  app.use(adminBro.options.rootPath, router);
+  const router = await AdminJSExpress.buildRouter(adminJs);
+  app.use(adminJs.options.rootPath, router);
 };
 
 export default setupAdmin;
