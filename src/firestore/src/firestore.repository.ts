@@ -3,6 +3,8 @@ import firebase from 'firebase';
 import CollectionReference = firebase.firestore.CollectionReference;
 import DocumentSnapshot = firebase.firestore.DocumentSnapshot;
 import UpdateData = firebase.firestore.UpdateData;
+import Query = firebase.firestore.Query;
+import DocumentData = firebase.firestore.DocumentData;
 
 export type FirestoreRepository = {
   find: () => CollectionReference<DocumentType>;
@@ -11,7 +13,7 @@ export type FirestoreRepository = {
 
   delete: (id: string) => Promise<void>;
 
-  count: () => Promise<number>;
+  count: (queryFn?: (ref: CollectionReference<DocumentData>) => Query<DocumentData>)  => Promise<number>;
 
   updateOne: (
     id: string,
@@ -19,6 +21,8 @@ export type FirestoreRepository = {
   ) => Promise<DocumentSnapshot>;
 
   create: (record) => Promise<DocumentSnapshot>;
+
+  query: (queryFn: (ref: CollectionReference<DocumentData>) => Query<DocumentData>) => Query<DocumentData>;
 };
 const firestoreRepository = (
   collection: CollectionReference<DocumentType>
@@ -29,7 +33,17 @@ const firestoreRepository = (
 
   delete: (id: string) => collection.doc(id).delete(),
 
-  count: async () => (await collection.get()).docs.length,
+  async count(queryFn?: (ref: CollectionReference<DocumentData>) => Query<DocumentData>) {
+    let query: Query<DocumentData> | CollectionReference<DocumentData> = collection;
+
+    if (queryFn) {
+      query = queryFn(collection);
+    }
+
+    const querySnapshot = await query.get();
+
+    return querySnapshot.docs.length;
+  },
 
   async updateOne(id: string, updatedRecord: UpdateData) {
     await collection.doc(id).update(updatedRecord);
@@ -41,6 +55,10 @@ const firestoreRepository = (
     await createdDocument.set(record);
     return collection.doc(createdDocument.id).get();
   },
+
+  query(queryFn: (ref: CollectionReference<DocumentData>) => Query<DocumentData>) {
+    return queryFn(collection);
+  }
 });
 
 export default firestoreRepository;

@@ -69,7 +69,13 @@ class FirestoreResource extends BaseResource {
   }
 
   // TODO: Filtering
-  async count(): Promise<number> {
+  async count(
+    filter?: Filter,
+  ): Promise<number> {
+    if (filter) {
+      const queryFn = this.convertFilterToFireStoreQuery(filter);
+      return this.repository.count(queryFn);
+    }
     return this.repository.count();
   }
 
@@ -87,10 +93,13 @@ class FirestoreResource extends BaseResource {
     const direction =
       options?.sort?.direction || FirestoreResource.DEFAULT_SORTING_DIRECTION;
 
+    // Convert the AdminJS Filter into a Firestore Query
+    const queryFn = this.convertFilterToFireStoreQuery(filter);
+
     const previousPage = (
       await this.repository
-        .find()
-        .orderBy(sortBy, direction)
+        .query(queryFn)
+        .orderBy('__name__', direction)
         .limit(options.offset || limit)
         .get()
     ).docs;
@@ -100,14 +109,26 @@ class FirestoreResource extends BaseResource {
     }
     const currentPage = (
       await this.repository
-        .find()
-        .orderBy(sortBy, direction)
+        .query(queryFn)
+        .orderBy('__name__', direction)
         .startAfter(last(previousPage).data()[sortBy])
         .limit(limit)
         .get()
     ).docs;
 
     return currentPage.map(this.toBaseRecord);
+  }
+
+  private convertFilterToFireStoreQuery(filter: Filter) {
+    return (ref: firebase.firestore.CollectionReference<DocumentData>) => {
+      let query: firebase.firestore.Query<DocumentData> = ref;
+
+      Object.entries(filter.filters).forEach(([field, filter]) => {
+        query = query.where(field, '==', isNaN(+filter.value) ? filter.value : +filter.value);
+      });
+
+      return query;
+    };
   }
 
   // TODO: Filtering by ids
