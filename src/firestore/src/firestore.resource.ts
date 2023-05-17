@@ -95,11 +95,31 @@ class FirestoreResource extends BaseResource {
 
     // Convert the AdminJS Filter into a Firestore Query
     const queryFn = this.convertFilterToFireStoreQuery(filter);
+    if (Object.keys(filter.filters).length > 0) {
+      const previousPage = (
+        await this.repository
+          .query(queryFn)
+          .limit(options.offset || limit)
+          .get()
+      ).docs;
 
+      if (!options.offset) {
+        return previousPage.map(this.toBaseRecord);
+      }
+      const currentPage = (
+        await this.repository
+          .query(queryFn)
+          .startAfter(last(previousPage).data()[sortBy])
+          .limit(limit)
+          .get()
+      ).docs;
+
+      return currentPage.map(this.toBaseRecord);
+    }
     const previousPage = (
       await this.repository
         .query(queryFn)
-        .orderBy('__name__', direction)
+        .orderBy(sortBy, direction)
         .limit(options.offset || limit)
         .get()
     ).docs;
@@ -110,7 +130,7 @@ class FirestoreResource extends BaseResource {
     const currentPage = (
       await this.repository
         .query(queryFn)
-        .orderBy('__name__', direction)
+        .orderBy(sortBy, direction)
         .startAfter(last(previousPage).data()[sortBy])
         .limit(limit)
         .get()
